@@ -46,7 +46,7 @@ def main():
         ('ip domain name test.local', 1),
         ('crypto key generate rsa', 3),
         ('2048', 2),
-        ('username admin privilege 15 secret cisco', 1),
+        ('username cisco privilege 15 secret cisco', 1),
         ('ip ssh version 2', 1),
         ('ip ssh authentication-retries 3', 1),
         ('interface GigabitEthernet0/0/0', 1),
