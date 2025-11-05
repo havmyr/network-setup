@@ -13,11 +13,11 @@ def send_command(ser, command, sleep=1):
         output.append(line)
     return output
 
-def setup_device(commands, hostname="Device", port='/dev/ttyS5', baud=9600):
-    print(f"[+] Kobler til {hostname} via {port} ({baud} baud)")
+def setup_device(commands):
+    print(f"[+] Kobler til switch")
     ser = serial.Serial(
-        port=port,
-        baudrate=baud,
+        port="/dev/ttyS1",
+        baudrate=9600,
         bytesize=serial.EIGHTBITS,
         parity=serial.PARITY_NONE,
         stopbits=serial.STOPBITS_ONE,
@@ -26,7 +26,7 @@ def setup_device(commands, hostname="Device", port='/dev/ttyS5', baud=9600):
     time.sleep(2)
     ser.read_all()  # tøm buffer
 
-    print(f"[+] Starter konfigurasjon for {hostname} ...")
+    print(f"[+] Starter konfigurasjon for switch ...")
 
     for cmd, delay in commands:
         print(f" -> Kjører: {cmd}")
@@ -34,7 +34,7 @@ def setup_device(commands, hostname="Device", port='/dev/ttyS5', baud=9600):
         for line in output:
             print("   ", line)
 
-    print(f"[✓] Ferdig med {hostname}")
+    print(f"[✓] Ferdig med switch")
     ser.close()
 
 def main():
@@ -45,24 +45,31 @@ def main():
         ('hostname S1', 1),
         ('ip domain name test.local', 1),
         ('crypto key generate rsa', 3),
-        ('1024', 2),
+        ('2048', 2),
+        ('username cisco privilege 15 secret cisco', 1),
+        ('ip ssh version 2', 1),
+        ('ip ssh authentication-retries 3', 1),
         ('vlan 10', 1),
         ('name Sales', 1),
         ('exit', 0.5),
         ('interface vlan 10', 1),
-        ('ip address 192.168.10.2 255.255.255.0', 1),
+        ('ip address 192.168.1.100 255.255.255.0', 1),
         ('no shutdown', 1),
         ('exit', 0.5),
+        ('ip default-gateway 192.168.10.1', 1),
         ('interface range fastEthernet 0/1 - 12', 1),
         ('switchport mode access', 1),
         ('switchport access vlan 10', 1),
         ('no shutdown', 1),
         ('exit', 0.5),
+        ('line vty 0 4', 1),
+        ('login local', 1),
+        ('transport input ssh', 1),
         ('end', 0.5),
         ('write memory', 2)
     ]
 
-    setup_device(switch_commands, hostname="Switch", port='/dev/ttyS5')
+    setup_device(switch_commands)
 
 if __name__ == '__main__':
     main()
