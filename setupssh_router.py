@@ -26,7 +26,7 @@ def setup_device(commands):
     time.sleep(2)
     ser.read_all()  # tøm buffer
 
-    print(f"[+] Starter konfigurasjon for {hostname} ...")
+    print(f"[+] Starter konfigurasjon for router ...")
 
     for cmd, delay in commands:
         print(f" -> Kjører: {cmd}")
@@ -34,7 +34,7 @@ def setup_device(commands):
         for line in output:
             print("   ", line)
 
-    print(f"[✓] Ferdig med {hostname}")
+    print(f"[✓] Ferdig med router")
     ser.close()
 
 def main():
