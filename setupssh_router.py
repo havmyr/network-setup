@@ -24,9 +24,9 @@ def setup_device(commands, hostname="Device", port='/dev/ttyS5', baud=9600):
         timeout=5
     )
     time.sleep(2)
-    ser.read_all()  # Tøm bufferen
+    ser.read_all()  # tøm buffer
 
-    print("[+] Starter konfigurasjon...")
+    print(f"[+] Starter konfigurasjon for {hostname} ...")
 
     for cmd, delay in commands:
         print(f" -> Kjører: {cmd}")
@@ -36,3 +36,28 @@ def setup_device(commands, hostname="Device", port='/dev/ttyS5', baud=9600):
 
     print(f"[✓] Ferdig med {hostname}")
     ser.close()
+
+def main():
+    router_commands = [
+        ('enable', 1),
+        ('terminal length 0', 1),
+        ('configure terminal', 1),
+        ('hostname R1', 1),
+        ('ip domain name test.local', 1),
+        ('crypto key generate rsa', 3),
+        ('1024', 2),
+        ('interface GigabitEthernet0/0', 1),
+        ('ip address 192.168.1.1 255.255.255.0', 1),
+        ('no shutdown', 1),
+        ('exit', 0.5),
+        ('line vty 0 4', 1),
+        ('login local', 1),
+        ('transport input ssh', 1),
+        ('end', 0.5),
+        ('write memory', 2)
+    ]
+
+    setup_device(router_commands, hostname="Router", port='/dev/ttyS5')
+
+if __name__ == '__main__':
+    main()
