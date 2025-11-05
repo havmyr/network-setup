@@ -13,11 +13,11 @@ def send_command(ser, command, sleep=1):
         output.append(line)
     return output
 
-def setup_device(commands, hostname="Device", port='/dev/ttyS5', baud=9600):
-    print(f"[+] Kobler til {hostname} via {port} ({baud} baud)")
+def setup_device(commands):
+    print(f"[+] Kobler til router")
     ser = serial.Serial(
-        port=port,
-        baudrate=baud,
+        port="/dev/ttyS4",
+        baudrate=9600,
         bytesize=serial.EIGHTBITS,
         parity=serial.PARITY_NONE,
         stopbits=serial.STOPBITS_ONE,
@@ -45,8 +45,11 @@ def main():
         ('hostname R1', 1),
         ('ip domain name test.local', 1),
         ('crypto key generate rsa', 3),
-        ('1024', 2),
-        ('interface GigabitEthernet0/0', 1),
+        ('2048', 2),
+        ('username admin privilege 15 secret cisco', 1),
+        ('ip ssh version 2', 1),
+        ('ip ssh authentication-retries 3', 1),
+        ('interface GigabitEthernet0/0/0', 1),
         ('ip address 192.168.1.1 255.255.255.0', 1),
         ('no shutdown', 1),
         ('exit', 0.5),
@@ -57,7 +60,7 @@ def main():
         ('write memory', 2)
     ]
 
-    setup_device(router_commands, hostname="Router", port='/dev/ttyS5')
+    setup_device(router_commands)
 
 if __name__ == '__main__':
     main()
